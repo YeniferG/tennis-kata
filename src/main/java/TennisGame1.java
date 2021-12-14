@@ -3,8 +3,8 @@ public class TennisGame1 implements TennisGame {
     
     private int scorePlayer1 = 0;
     private int scorePlayer2 = 0;
-    private String player1Name;
-    private String player2Name;
+    private final String player1Name;
+    private final String player2Name;
 
     public TennisGame1(String player1Name, String player2Name) {
         this.player1Name = player1Name;
@@ -22,54 +22,60 @@ public class TennisGame1 implements TennisGame {
         String score = "";
         int tempScore=0;
         if (scorePlayer1==scorePlayer2)
-        {
-            switch (scorePlayer1)
-            {
-                case 0:
-                        score = "Love-All";
-                    break;
-                case 1:
-                        score = "Fifteen-All";
-                    break;
-                case 2:
-                        score = "Thirty-All";
-                    break;
-                default:
-                        score = "Deuce";
-                    break;
-                
-            }
-        }
+            score = equalsScorePlayers();
         else if (scorePlayer1>=4 || scorePlayer2>=4)
-        {
-            int minusResult = scorePlayer1-scorePlayer2;
-            if (minusResult==1) score ="Advantage player1";
-            else if (minusResult ==-1) score ="Advantage player2";
-            else if (minusResult>=2) score = "Win for player1";
-            else score ="Win for player2";
-        }
+            score = scoreGreaterThan4();
         else
+            score = getScoreWhenIsZeroToThree();
+        return score;
+    }
+
+    private String equalsScorePlayers(){
+        switch (scorePlayer1)
         {
-            for (int i=1; i<3; i++)
-            {
-                if (i==1) tempScore = scorePlayer1;
-                else { score+="-"; tempScore = scorePlayer2;}
-                switch(tempScore)
-                {
-                    case 0:
-                        score+="Love";
-                        break;
-                    case 1:
-                        score+="Fifteen";
-                        break;
-                    case 2:
-                        score+="Thirty";
-                        break;
-                    case 3:
-                        score+="Forty";
-                        break;
-                }
-            }
+            case 0: return "Love-All";
+            case 1: return "Fifteen-All";
+            case 2: return "Thirty-All";
+            default: return "Deuce";
+        }
+    }
+
+    private String advantageScore(int minusResult){
+        return minusResult ==1 ? "Advantage player1" : "Advantage player2";
+    }
+
+    private String winScore(int minusResult){
+        return minusResult >= 2 ? "Win for player1": "Win for player2";
+    }
+
+    private String scoreGreaterThan4(){
+        int minusResult = scorePlayer1 - scorePlayer2;
+        switch(minusResult){
+            case 1: case -1: return advantageScore(minusResult);
+            default: return winScore(minusResult);
+        }
+    }
+
+    private Boolean isLastScorePlayer(Integer scorePlayer){
+        return scorePlayer == 1;
+    }
+
+    private String assignScoreByPlayer(Integer scoreByPlayer){
+        String score = "";
+        switch(scoreByPlayer)
+        {
+            case 0: return score+="Love";
+            case 1: return score+="Fifteen";
+            case 2: return score+="Thirty";
+            default: return score+="Forty";
+        }
+    }
+
+    private String getScoreWhenIsZeroToThree(){
+        String score = "";
+        Integer scorePlayers[] = {scorePlayer1,scorePlayer2};
+        for (int scorePlayer = 0;scorePlayer <scorePlayers.length;scorePlayer++){ if(isLastScorePlayer(scorePlayer)) score += "-";
+            score += assignScoreByPlayer(scorePlayers[scorePlayer]);
         }
         return score;
     }
