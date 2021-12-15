@@ -12,25 +12,49 @@ public class TennisGame3 implements TennisGame {
     }
 
     public String getScore() {
-        String s;
-        if (scorePlayer1 < 4 && scorePlayer2 < 4 && !(scorePlayer1 + scorePlayer2 == 6)) {
-            String[] p = new String[]{"Love", "Fifteen", "Thirty", "Forty"}; 
-            s = p[scorePlayer1];
-            return (scorePlayer1 == scorePlayer2) ? s + "-All" : s + "-" + p[scorePlayer2];
-        } else {
-            if (scorePlayer1 == scorePlayer2)
-                return "Deuce";
-            s = scorePlayer1 > scorePlayer2 ? player1Name : player2Name;
-            return ((scorePlayer1-scorePlayer2)*(scorePlayer1-scorePlayer2) == 1) ? "Advantage " + s : "Win for " + s;
+        String score;
+        if (notIsDeuce()) {
+            String[] scores = new String[]{"Love", "Fifteen", "Thirty", "Forty"};
+            score = scores[scorePlayer1];
+            return getScoreByPlayer(score,scores);
         }
+        if (isTie())
+            return "Deuce";
+        score = highestScore();
+        return getScoreWhenAdvantageOrWin(score) ;
+
     }
-    
+
+    public String getScoreWhenAdvantageOrWin(String score){
+        return (getPointsDifference() * getPointsDifference() == 1) ? "Advantage " + score : "Win for " + score;
+    }
+
+    public Integer getPointsDifference(){
+        return scorePlayer1 - scorePlayer2;
+    }
+
+    public String highestScore(){
+        return scorePlayer1 > scorePlayer2 ? player1Name : player2Name;
+    }
+
+    public String getScoreByPlayer(String score, String[] scores){
+        return isTie() ? score + "-All" : score + "-" + scores[scorePlayer2];
+    }
+
+    public Boolean notIsDeuce(){
+        return scorePlayer1 < 4 && scorePlayer2 < 4 && !(scorePlayer1 + scorePlayer2 == 6);
+    }
+
+    public Boolean isTie(){
+        return scorePlayer1 == scorePlayer2;
+    }
+
     public void wonPoint(String playerName) {
         if (playerName == "player1")
             this.scorePlayer1 += 1;
         else
             this.scorePlayer2 += 1;
-        
+
     }
 
 }
